@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>
+クライアントサイド統合 – 自動化フレームワーク対応
+</TITLE>
+</HEAD>
+<BODY>
+<H1>クライアントサイド統合 – 自動化フレームワーク対応</H1>
+このアドオンは自動化フレームワークに対応しています。
+
+<H2>ジョブ: spiderClient</H2>
+spiderClient ジョブを使用すると、モダンなWebアプリケーションをより効率的に探索するために設計された<a href="spider.html">クライアントスパイダー</a>を実行できます。
+<p>
+このジョブはモニターテストをサポートしています。
+
+<pre>
+  - type: spiderClient                 # クライアントスパイダー - モダンなウェブアプリケーションをより効率的に探索するスパイダー
+    parameters:
+      context:                         # 文字列: スパイダーするコンテキストの名前、デフォルト: 最初のコンテキスト
+      user:                            # 文字列: 認証に使用する任意のユーザー。envで定義されている必要があります
+      url:                             # 文字列: スパイダーを開始するURL、デフォルト: 最初のコンテキストのURL
+      maxDuration:                     # Int: スパイダーの最大実行時間 (分)、デフォルト: 0 (無制限)
+      maxCrawlDepth:                   # Int: 探索する最大ツリー深度、デフォルト 5
+      maxChildren:                     # Int: ツリー内の各ノードに追加する子の最大数
+      numberOfBrowsers:                # Int: スパイダーが使用するブラウザの数。数が多いほど高速ですが、より多くのメモリを消費します、デフォルト: コアの数
+      browserId:                       # 文字列: 使用するブラウザID、デフォルト: firefox-headless
+      initialLoadTime:                 # Int: 最初のURLがロードされた後の待機時間 (秒)、デフォルト: 5
+      pageLoadTime:                    # Int: 新しいURLがロードされた後の待機時間 (秒)、デフォルト: 1
+      shutdownTime:                    # Int: アクティビティがない状態が続いた後、シャットダウンするまでの待機時間 (秒)、デフォルト: 5
+      scopeCheck:                      # 文字列: スコープチェック。Flexible (柔軟) または Strict (厳格)、デフォルト: Flexible
+</pre>
+
+<H2>パッシブスキャンルール</H2>
+
+クライアントの<a href="pscan.html">パッシブスキャンルール</a>は、標準の passiveScan-config ジョブを介して設定できます。
+
+</BODY>
+</HTML>

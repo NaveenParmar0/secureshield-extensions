@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>スクリプト – 自動化フレームワーク対応</TITLE>
+</HEAD>
+<BODY>
+	<H1>スクリプト – 自動化フレームワーク対応</H1>
+	このアドオンは自動化フレームワークに対応しています。
+
+	<H2>ジョブ: script</H2>
+    script ジョブを使用すると、スクリプトを使用してさまざまなアクションを実行できます：
+    
+	<H2>アクション: add</H2>
+
+	指定されたスクリプトをZAPに追加します。 スクリプトは有効化されますが、ZAPの再起動時にロードされるようには設定されません。
+	<p>
+	デフォルトでは、ファイル拡張子に対する既定のスクリプトエンジン (存在する場合) が使用されます。これは、engine パラメーターを使用して上書きできます。
+	
+	<ul>
+	<li>type: 必須。ZAPがサポートする任意のスクリプトタイプを指定できます。
+	<li>engine: オプション。ファイル拡張子に対する既定のエンジンを上書きするために使用できます。
+	<li>name: オプション。ファイル名が既定値となります。別のジョブでスクリプトを指定するために使用できます。
+	<li>source: 必須。ファイルへのパス (絶対パスまたはプランに対する相対パス)。読み取り可能なテキストファイルでなければなりません。
+	</ul>
+	
+	<code>source</code> パラメーターは以前は <code>file</code> と呼ばれていましたが、どちらも機能します。
+	
+	<H2>アクション: remove</H2>
+
+	指定されたスクリプトをZAPから削除します。
+	
+	<ul>
+	<li>name: 必須。ZAP内のスクリプト名
+	</ul>
+
+	<H2>アクション: run</H2>
+
+	指定されたスクリプトをZAPで実行します。 スクリプトは事前にZAPで利用可能になっている必要があります (例: add アクションを使用して追加されているなど)。
+
+	<ul>
+	<li>type: 必須。standalone または targeted のいずれかを指定できます。
+	<li>name: 必須。ZAP内のスクリプト名
+	<li>engine: オプション。ファイル拡張子に対する既定のエンジンを上書きするために使用できます。
+	<li>target: 必須 (type が targeted の場合)。targeted スクリプトに対して起動されるターゲットURL。
+	</ul>
+
+	<H2>アクション: loaddir</H2>
+
+	指定されたソースパス配下のサブディレクトリにあるすべてのスクリプトをZAPにロードします。 
+	スクリプトは有効化されますが、ZAPの再起動時にロードされるようには設定されません。
+	<p>
+	スクリプトは、関連するスクリプトタイプ (‘active’、‘passive’、‘proxy’ など) に対応した名前のサブディレクトリに配置する必要があり、使用するスクリプト言語に応じて適切な拡張子を持つ必要があります。
+	
+	<ul>
+	<li>source: 必須。ディレクトリへのパス (絶対パスまたはプランに対する相対パス)
+	</ul>
+	
+	<H2>アクション: enable</H2>
+
+	指定されたスクリプトを有効化します。 スクリプトは事前にZAPで利用可能になっている必要があります (例: add アクションを使用して追加されているなど)。
+
+	<ul>
+		<li>name: 必須。ZAP内のスクリプト名
+	</ul>
+
+	<H2>アクション: disable</H2>
+
+	指定されたスクリプトを無効化します。 スクリプトは事前にZAPで利用可能になっている必要があります (例: add アクションを使用して追加されているなど)。
+
+	<ul>
+		<li>name: 必須。ZAP内のスクリプト名
+	</ul>
+
+	<H2>YAML 定義</H2>
+	すべてのパラメーターがすべてのアクションに対して有効であるわけではありません。詳細については上記を参照してください。
+	
+    <pre>
+  - type: script
+    parameters:
+      action:                    # 文字列: 実行されるアクション - 利用可能なアクション: add, remove, run, enable, disable
+      type:                      # 文字列: スクリプトのタイプ
+      engine:                    # 文字列: 使用するスクリプトエンジン - ファイル拡張子に対する既定のエンジンをオーバーライドするために使用可能
+      name:                      # 文字列: スクリプト名、ファイル名が既定値
+      source:                    # 文字列: 完全パスまたは相対ファイルパス、読み取り可能である必要があります
+      inline:                    # 文字列: 完全なスクリプト(複数行可能) - これまたは 'source' のいずれかを指定し、両方は指定しないこと
+      target:                    # 文字列: "targeted" スクリプトタイプに対して呼び出されるURL
+	</pre>
+
+	<code>source</code> パラメーターは以前は <code>file</code> と呼ばれていましたが、どちらも機能します。
+
+	<H2>インラインスクリプト</H2>
+	
+	インラインスクリプトとは、スクリプトの内容が別のファイルではなく YAMLプラン内 に記述されているものです。
+	
+	単純なスタンドアロンのインラインスクリプトを追加して実行する例は以下のとおりです。
+
+    <pre>
+  - type: script
+      parameters:
+        action: "add"
+        type: "standalone"
+        engine: "ECMAScript : Graal.js"
+        name: "inline-test"
+        inline: |
+          print("This is a simple example")
+          print("Of a multi-line script")
+  - type: script
+      parameters:
+        action: "run"
+        type: "standalone"
+        name: "inline-test"
+	</pre>
+
+	<H2>プランとの連携</H2>
+
+	スクリプトは、以下のようなコードを使用して実行中のプランと連携できます。
+	
+	<pre><code>
+var extAF = control.getExtensionLoader().getExtension("ExtensionAutomation");
+
+var plans = extAF.getRunningPlans();
+
+if (plans.size() >  0) {
+  plans.get(0).getProgress().info("An info message added by a script");
+} else {
+  print('No running plans');
+}
+	</code></pre>
+
+</BODY>
+</HTML>
